@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BookDZ - تسجيل مكتبة جديدة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <style>
+        .register-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header-section i {
+            font-size: 3rem;
+            color: var(--secondary);
+            margin-bottom: 12px;
+        }
+
+        .header-section h1 {
+            font-size: 2rem;
+            color: var(--text-primary);
+        }
+
+        .register-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 480px;
+            padding: 30px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--secondary);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: var(--gradient-secondary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-pill);
+            font-size: 1.1rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-back {
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .btn-back:hover {
+            color: var(--primary);
+        }
+
+        /* Success Card */
+        .success-card {
+            display: none;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 480px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+            border: 2px solid var(--secondary);
+        }
+
+        .success-card i {
+            font-size: 4rem;
+            color: var(--secondary);
+            margin-bottom: 20px;
+        }
+
+        .success-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 12px;
+        }
+
+        .generated-id {
+            background: #f8fafc;
+            border: 2px dashed var(--secondary);
+            padding: 16px;
+            font-size: 2rem;
+            font-family: monospace;
+            font-weight: 800;
+            color: var(--primary-dark);
+            letter-spacing: 4px;
+            margin: 20px 0;
+            border-radius: var(--radius-md);
+            user-select: all;
+        }
+
+        .warning-text {
+            color: var(--accent);
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            padding: 12px;
+            background: rgba(244, 63, 94, 0.1);
+            border-radius: var(--radius-sm);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container register-container">
+
+        <div class="header-section" id="headerSection">
+            <i class="fas fa-store-alt"></i>
+            <h1>انضم كشريك (مكتبة)</h1>
+            <p style="color:var(--text-secondary)">سجل مكتبتك وابدأ ببيع كتبك وعرضها للزبائن</p>
+        </div>
+
+        <form class="register-card" id="registerForm">
+            <div class="form-group">
+                <label>اسم المكتبة</label>
+                <input type="text" id="libName" placeholder="مثال: مكتبة النور" required>
+            </div>
+
+            <div class="form-group">
+                <label>الولاية</label>
+                <select id="libWilaya" required>
+                    <option value="">اختر الولاية المتواجدة بها</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>رقم هاتف مسؤول المكتبة</label>
+                <input type="tel" id="libPhone" placeholder="0550000000" pattern="0[567][0-9]{8}" required>
+            </div>
+
+            <button type="submit" class="btn-submit">تأكيد التسجيل وتوليد المُعرِّف</button>
+            <div style="text-align: center;">
+                <a href="index.html" class="btn-back"><i class="fas fa-arrow-right"></i> العودة للصفحة الرئيسية</a>
+            </div>
+        </form>
+
+        <!-- نجاح التسجيل -->
+        <div class="success-card" id="successCard">
+            <i class="fas fa-check-circle"></i>
+            <h2>تم تسجيل مكتبتك بنجاح!</h2>
+            <p style="color:var(--text-secondary)">هذا هو المعرف السري الخاص بك لفتح واجهة لوحة تحكم المكتبة وتلقي
+                الطلبات.</p>
+
+            <div class="generated-id" id="displayId">--------</div>
+
+            <div class="warning-text">
+                <i class="fas fa-exclamation-triangle"></i> يرجى نسخ أو حفظ هذا الكود جيداً، لا تشاركه مع أي شخص، فهو
+                بمثابة مفتاح متجرك!
+            </div>
+
+            <button class="btn-submit" onclick="copyIdAndLogin()" style="background: var(--gradient-primary)">
+                نسخ المعرف والذهاب لتسجيل الدخول <i class="fas fa-sign-in-alt"></i>
+            </button>
+        </div>
+
+    </div>
+
+    <script src="algeria_cities.js"></script>
+    <script>
+        const registerForm = document.getElementById('registerForm');
+        const successCard = document.getElementById('successCard');
+        const headerSection = document.getElementById('headerSection');
+        const libWilaya = document.getElementById('libWilaya');
+        const displayId = document.getElementById('displayId');
+        let generatedCode = '';
+
+        // تعبئة الولايات من قاعدة البيانات المحاكاة
+        if (typeof algeriaWilayas !== 'undefined') {
+            algeriaWilayas.forEach(w => {
+                const opt = document.createElement('option');
+                opt.value = w.name;
+                opt.textContent = `${w.id} - ${w.name}`;
+                libWilaya.appendChild(opt);
+            });
+        }
+
+        // دالة توليد الأكواد
+        function generateLibraryId() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let newId = '';
+            for (let i = 0; i < 8; i++) {
+                const randomIndex = Math.floor(Math.random() * chars.length);
+                newId += chars[randomIndex];
+            }
+            return newId;
+        }
+
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            // 1. توليد كود المكتبة
+            generatedCode = generateLibraryId();
+
+            // 2. إظهار الإشعار الناجح
+            displayId.textContent = generatedCode;
+
+            registerForm.style.display = 'none';
+            headerSection.style.display = 'none';
+            successCard.style.display = 'block';
+
+            // المحاكاة: في تطبيقك الواقعي ستقوم برفع بيانات المكتبة (الاسم، الولاية، الهاتف) مع هذا الكود لـ Firebase
+
+            // محلياً: نحفظ الكود المتولد لنسمح للتاجر بالدخول به للتجربة في index.html
+            let validIds = JSON.parse(localStorage.getItem('validLibraryIds')) || ['A1B2C3D4'];
+            validIds.push(generatedCode);
+            localStorage.setItem('validLibraryIds', JSON.stringify(validIds));
+        });
+
+        function copyIdAndLogin() {
+            navigator.clipboard.writeText(generatedCode).then(() => {
+                alert('تم نسخ المعرف: ' + generatedCode);
+                window.location.href = 'index.html';
+            });
+        }
+    </script>
+</body>
+
+</html>

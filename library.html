@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BookDZ - لوحة تحكم المكتبة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="print_style.css">
+    <style>
+        .dashboard-header {
+            background: var(--gradient-secondary);
+            padding: 30px 20px;
+            color: white;
+            border-bottom-left-radius: var(--radius-lg);
+            border-bottom-right-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            position: relative;
+        }
+
+        .library-profile {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .library-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 2px solid white;
+        }
+
+        .lib-info h1 {
+            font-size: 1.4rem;
+            font-weight: 800;
+        }
+
+        /* 8 Character ID Styling */
+        .lib-id-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(4px);
+            padding: 4px 12px;
+            border-radius: var(--radius-pill);
+            font-size: 0.85rem;
+            margin-top: 4px;
+            font-family: monospace;
+            letter-spacing: 1px;
+        }
+
+        .lib-id-badge i {
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            padding: 20px;
+            margin-top: -20px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .stat-icon.orders {
+            background: var(--accent);
+        }
+
+        .stat-icon.revenue {
+            background: var(--secondary);
+        }
+
+        .stat-details h3 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .stat-details p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .orders-section {
+            padding: 0 20px 20px;
+        }
+
+        .order-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .order-id {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-family: monospace;
+        }
+
+        .order-time {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .order-book {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .order-book img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .order-book-info h4 {
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+
+        .order-book-info p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-accept {
+            flex: 1;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-reject {
+            flex: 1;
+            background: #f1f5f9;
+            color: var(--accent);
+            border: none;
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* Logout */
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+
+        <!-- Header -->
+        <header class="dashboard-header">
+            <button class="logout-btn" onclick="window.location.href='index.html'" title="تسجيل الخروج">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+            <div class="library-profile">
+                <img src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?q=80&w=400&auto=format&fit=crop"
+                    alt="مكتبة اقرأ" class="library-avatar">
+                <div class="lib-info">
+                    <h1>مكتبة اقرأ</h1>
+                    <div class="lib-id-badge" onclick="alert('تم نسخ المعرف!')">
+                        <i class="fas fa-copy"></i>
+                        ID: A1B2C3D4
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main style="flex: 1; overflow-y: auto;">
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon orders"><i class="fas fa-box"></i></div>
+                    <div class="stat-details">
+                        <h3 id="pendingCount">3</h3>
+                        <p>طلبات جديدة</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon revenue"><i class="fas fa-wallet"></i></div>
+                    <div class="stat-details">
+                        <h3>8,500 <span style="font-size:0.8rem">دج</span></h3>
+                        <p>أرباح اليوم</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders List -->
+            <section class="orders-section">
+                <h2 style="margin-bottom: 16px; font-size: 1.2rem; color: var(--text-primary);">الطلبات الواردة</h2>
+                <div id="vendorOrdersList">
+                    <!-- Injected by JS -->
+                </div>
+            </section>
+        </main>
+
+        <!-- Bottom Navigation for Library -->
+        <nav class="bottom-nav">
+            <a href="#" class="nav-item active">
+                <i class="fas fa-home"></i>
+                <span>الرئيسية</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-book"></i>
+                <span>المخزون</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-chart-line"></i>
+                <span>التقارير</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span>الإعدادات</span>
+            </a>
+        </nav>
+
+    </div>
+
+    <script src="library.js"></script>
+</body>
+
+</html>

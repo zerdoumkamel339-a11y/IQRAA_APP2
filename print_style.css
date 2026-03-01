@@ -1,0 +1,57 @@
+/* Print Styles */
+@media print {
+    body * {
+        visibility: hidden;
+        /* إخفاء كل محتويات الصفحة بشكل افتراضي في الطباعة */
+    }
+
+    .printing-now,
+    .printing-now * {
+        visibility: visible;
+        /* إظهار فقط الكارد المحدد للطباعة */
+    }
+
+    .printing-now {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 20px;
+        border: 2px solid #000 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    .no-print {
+        display: none !important;
+        /* إخفاء الأزرار وأيقونات الإجراءات في الطباعة */
+    }
+
+    .printing-now .order-header {
+        border-bottom: 2px solid #000;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+
+    .printing-now .order-id {
+        font-size: 1.5rem !important;
+        font-weight: bold;
+        color: #000 !important;
+    }
+
+    .printing-now h4 {
+        font-size: 1.3rem !important;
+    }
+
+    /* جعل ألوان النصوص والخلفيات مناسبة للطباعة بالأبيض والأسود */
+    .printing-now .printable-section>div {
+        background: transparent !important;
+        border: 1px solid #000 !important;
+        color: #000 !important;
+    }
+}
+
+.hide-for-print {
+    /* يُستخدم بواسطة JS فقط أثناء الطباعة */
+}

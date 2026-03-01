@@ -1,0 +1,64 @@
+/* Checkout form modal styles to be appended by the agent */
+.checkout-header {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.checkout-header h3 {
+    font-size: 1.3rem;
+    font-weight: 800;
+}
+
+.checkout-header p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.checkout-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: right;
+}
+
+.form-group label {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.form-group select,
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 1rem;
+    background: var(--bg-main);
+    color: var(--text-primary);
+    transition: all 0.2s;
+}
+
+.form-group select:focus,
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.form-group select:disabled {
+    opacity: 0.7;
+    background: #e2e8f0;
+    cursor: not-allowed;
+}
+
+.checkout-content {
+    padding-bottom: 30px;
+}

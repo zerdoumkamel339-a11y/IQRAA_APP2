@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BookDZ - واجهة الشراء</title>
+    <!-- Store UI Static Resources -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- PWA Settings & Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- iOS / Apple Specific PWA Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="BookDZ">
+    <link rel="apple-touch-icon" href="icon-192.svg">
+
+    <style>
+        /* CSS Variables and Base Styles from index.css */
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --secondary: #14b8a6;
+            --accent: #f43f5e;
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --gradient-primary: linear-gradient(135deg, #6366f1, #8b5cf6);
+            --gradient-secondary: linear-gradient(135deg, #14b8a6, #3b82f6);
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08);
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-pill: 9999px;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            margin: 0;
+            direction: rtl;
+        }
+
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            background: var(--bg-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Pages */
+        .page-content {
+            display: none;
+            padding-bottom: 90px;
+        }
+
+        .page-content.active {
+            display: block;
+        }
+
+        /* Header */
+        .app-header {
+            background: var(--bg-card);
+            padding: 24px 20px 20px;
+            border-bottom-left-radius: var(--radius-lg);
+            border-bottom-right-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-greeting {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-light);
+        }
+
+        .greeting-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hello {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .location {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .location i {
+            color: var(--accent);
+        }
+
+        .notifications-btn {
+            background: var(--bg-main);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent);
+            border-radius: 50%;
+            border: 2px solid var(--bg-card);
+        }
+
+        /* Tabs */
+        .top-tabs {
+            display: flex;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 70px;
+            z-index: 90;
+        }
+
+        .top-tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .top-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        /* Feed */
+        .feed-post {
+            background: var(--bg-card);
+            padding: 16px;
+            margin: 16px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+        }
+
+        .feed-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+        }
+
+        .feed-type {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .feed-text {
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .feed-actions {
+            display: flex;
+            gap: 16px;
+            border-top: 1px solid var(--border);
+            padding-top: 10px;
+        }
+
+        .feed-actions button {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Market */
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: var(--bg-main);
+            border-radius: var(--radius-pill);
+            padding: 8px 16px;
+            gap: 12px;
+            margin: 15px 20px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            outline: none;
+            padding: 8px 0;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+        }
+
+        .see-all {
+            font-size: 0.8rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .horizontal-scroll {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 0 20px 20px;
+            scrollbar-width: none;
+        }
+
+        .horizontal-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .book-card {
+            min-width: 150px;
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            padding: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .book-cover {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: var(--radius-sm);
+        }
+
+        .book-info {
+            margin-top: 10px;
+        }
+
+        .book-title {
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .book-author {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .book-price {
+            font-weight: 800;
+            color: var(--primary);
+            font-size: 1rem;
+            margin-top: 5px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 8px;
+            border-radius: var(--radius-sm);
+            border: none;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        .btn-buy {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-wa {
+            background: #25D366;
+            color: white;
+        }
+
+        /* Auth Overlay */
+        .auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(248, 250, 252, 0.98);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .auth-card {
+            background: var(--bg-card);
+            width: 100%;
+            max-width: 420px;
+            border-radius: var(--radius-lg);
+            padding: 35px 25px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .role-btn {
+            width: 100%;
+            padding: 14px 20px;
+            margin-bottom: 12px;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .role-btn:hover {
+            border-color: var(--primary);
+            background: #f1f5f9;
+        }
+
+        .auth-form {
+            display: none;
+            text-align: right;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-pill);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .auth-switch {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 15px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .auth-switch span {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .logout-btn-header {
+            background: rgba(244, 63, 94, 0.1);
+            color: var(--accent);
+            border: none;
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: none;
+        }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 480px;
+            background: var(--bg-card);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid var(--border);
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item i {
+            font-size: 1.2rem;
+        }
+
+        /* Cart & Checkout Overlays */
+        .cart-overlay,
+        .checkout-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .cart-modal,
+        .checkout-modal {
+            background: white;
+            width: 100%;
+            max-width: 440px;
+            max-height: 80vh;
+            border-radius: var(--radius-lg);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        .cart-item-img {
+            width: 50px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: var(--radius-sm);
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-remove {
+            color: var(--accent);
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Auth Overlay -->
+    <div id="authOverlay" class="auth-overlay">
+        <div class="auth-card">
+            <!-- Login View -->
+            <div id="loginView" class="auth-form active">
+                <h1 style="text-align: center; color: var(--primary);">مرحباً بك في BookDZ</h1>
+                <p style="color: var(--text-secondary); margin-bottom: 20px; text-align: center;">تسجيل الدخول ومتابعة
+                    التصفح</p>
+                <div class="form-group">
+                    <label id="loginLabel">البريد الإلكتروني / رقم الهاتف</label>
+                    <input type="text" id="loginEmail" placeholder="أدخل حسابك..." oninput="updateLoginPrompt()">
+                </div>
+                <div class="form-group">
+                    <label>كلمة المرور</label>
+                    <input type="password" id="loginPass" placeholder="••••••••">
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <button class="btn-submit" onclick="processLogin()"><i class="fas fa-sign-in-alt"></i> دخول</button>
+                </div>
+                <div class="auth-switch" onclick="toggleAuthView('registerView')">ليس لديك حساب؟ <span>سجل الآن</span>
+                </div>
+            </div>
+
+            <!-- Register Choice View -->
+            <div id="registerView" class="auth-form" style="text-align: center;">
+                <h1 style="color: var(--primary);">إنشاء حساب جديد</h1>
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">اختر نوع الحساب الذي تريده</p>
+                <button class="role-btn" onclick="openRegForm('user')"><i class="fas fa-user"></i> مستخدم عادي
+                    (مشتري)</button>
+                <button class="role-btn" onclick="openRegForm('individual')"><i class="fas fa-user-tag"></i> بائع
+                    فردي</button>
+                <button class="role-btn" onclick="openRegForm('bookstore')"><i class="fas fa-store"></i> مكتبة (شراء
+                    وبيع)</button>
+                <button class="role-btn" onclick="openRegForm('publisher')"><i class="fas fa-building"></i> دار نشر (طلب
+                    اعتماد)</button>
+                <div class="auth-switch" onclick="toggleAuthView('loginView')">لديك حساب بالفعل؟ <span>تسجيل
+                        الدخول</span></div>
+            </div>
+
+            <!-- Standard Registration Form -->
+            <div id="standardRegForm" class="auth-form">
+                <h2 style="margin-bottom: 15px; color: var(--primary); text-align: center;" id="stdRegTitle">تسجيل</h2>
+                <input type="hidden" id="stdRegRole">
+                <div class="form-group">
+                    <label>الاسم الكامل / اسم المتجر</label>
+                    <input type="text" id="regName" placeholder="أدخل الاسم...">
+                </div>
+                <div class="form-group">
+                    <label id="regPhoneLabel">رقم الهاتف</label>
+                    <input type="tel" id="regPhone" placeholder="مثل: 0555000000">
+                </div>
+                <div class="form-group" id="regStateGroup">
+                    <label id="regStateLabel">الولاية</label>
+                    <select id="regState" onchange="updateMunicipalities()">
+                        <option value="">-- اختر الولاية --</option>
+                    </select>
+                </div>
+                <div class="form-group" id="regMunicipalityGroup" style="display: none;">
+                    <label>البلدية (إجباري)</label>
+                    <select id="regMunicipality">
+                        <option value="">-- اختر البلدية --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>كلمة المرور</label>
+                    <input type="password" id="regPass" placeholder="••••••••">
+                </div>
+                <div class="form-group">
+                    <label>تأكيد كلمة المرور</label>
+                    <input type="password" id="regPassConfirm" placeholder="••••••••">
+                </div>
+                <button class="btn-submit" onclick="submitRegister()">انضم الآن</button>
+                <div class="auth-switch" onclick="toggleAuthView('registerView')">العودة لاختيار الحساب</div>
+            </div>
+
+            <!-- OTP Verification View -->
+            <div id="otpView" class="auth-form">
+                <h2 style="margin-bottom: 15px; color: var(--primary); text-align: center;">التحقق من الهاتف</h2>
+                <p id="otpInstruction" style="color: var(--text-secondary); margin-bottom: 20px; text-align: center;">تم
+                    إرسال رمز التحقق إلى رقم هاتفك</p>
+                <div class="form-group">
+                    <label>رمز التحقق (OTP)</label>
+                    <input type="text" id="otpInput" placeholder="123456"
+                        style="text-align: center; letter-spacing: 5px; font-size: 1.5rem;">
+                </div>
+                <button class="btn-submit" onclick="verifyOTP()">تأكيد الحساب</button>
+                <div class="auth-switch" onclick="toggleAuthView('standardRegForm')">العودة لتعديل البيانات</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-top">
+                <div class="user-greeting">
+                    <img src="https://ui-avatars.com/api/?name=زائر&background=random" class="avatar" id="headerAvatar"
+                        alt="Avatar">
+                    <div class="greeting-text">
+                        <span class="hello" id="headerName">مرحباً</span>
+                        <span class="location" id="headerRoleLabel"><i class="fas fa-map-marker-alt"></i> الجزائر
+                            العاصمة</span>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center;" id="headerActions">
+                    <button id="logoutBtn" class="logout-btn-header" onclick="logout()">خروج</button>
+                    <button class="notifications-btn" onclick="showCart()">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="badge" id="cartBadge" style="display:none;"></span>
+                    </button>
+                    <button class="notifications-btn">
+                        <i class="far fa-bell"></i>
+                        <span class="badge"></span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="app-main">
+            <!-- 1. HOME PAGE -->
+            <div id="page-home" class="page-content active">
+                <div class="top-tabs">
+                    <div class="top-tab active" onclick="switchHomeTab('home-market', this)">السوق</div>
+                    <div class="top-tab" onclick="switchHomeTab('home-feed', this)">نبض القراءة</div>
+                    <div class="top-tab" onclick="switchHomeTab('home-publishers', this)" id="b2bTab"
+                        style="display: none;">إصدارات النشر</div>
+                </div>
+
+                <!-- Market View -->
+                <div id="home-market" class="sub-page active">
+                    <div class="search-bar">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" placeholder="ابحث عن كتاب، مؤلف، مكتبة...">
+                        <button class="filter-btn"><i class="fas fa-sliders-h"></i></button>
+                    </div>
+
+                    <div class="section-header">
+                        <h2 class="section-title">الأكثر مبيعاً</h2>
+                        <span class="see-all">الكل</span>
+                    </div>
+                    <div class="horizontal-scroll" id="bestSellers">
+                        <!-- Book cards -->
+                        <div class="book-card">
+                            <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=200&auto=format&fit=crop"
+                                class="book-cover">
+                            <div class="book-info">
+                                <div class="book-title">الخيميائي</div>
+                                <div class="book-author">باولو كويلو</div>
+                                <div class="book-price">1200 د.ج</div>
+                                <button class="btn btn-wa" onclick="contactSellerWA('الخيميائي', 'store')"><i
+                                        class="fab fa-whatsapp"></i> واتساب</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-header">
+                        <h2 class="section-title">الكتب المستعملة (أفراد)</h2>
+                    </div>
+                    <div class="horizontal-scroll" id="usedBooks">
+                        <div class="book-card">
+                            <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=200&auto=format&fit=crop"
+                                class="book-cover">
+                            <div class="book-info">
+                                <div class="book-title">نظرية الفستق</div>
+                                <div class="book-author">👤 بائع فردي</div>
+                                <div class="book-price">800 د.ج</div>
+                                <button class="btn btn-wa" onclick="contactSellerWA('نظرية الفستق', 'individual')"><i
+                                        class="fab fa-whatsapp"></i> واتساب</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feed View -->
+                <div id="home-feed" class="sub-page" style="display: none;">
+                    <div id="feedList">
+                        <!-- Sample Post -->
+                        <div class="feed-post">
+                            <div class="feed-header"><span class="feed-type">توصية</span><span>منذ 3 ساعات</span></div>
+                            <div class="feed-text">كتاب "عادات ذرية" يغير حياتك فعلاً. أنصح الجميع بقراءته لفهم كيفية
+                                بناء عادات مستدامة.</div>
+                            <div class="feed-actions">
+                                <button onclick="react(this, '❤️')">❤️</button>
+                                <button onclick="react(this, '👎')">👎</button>
+                                <button onclick="react(this, '🔁')">🔁</button>
+                                <button onclick="react(this, '🔖')">🔖</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. SEARCH PAGE -->
+            <div id="page-search" class="page-content">
+                <div class="search-bar">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" placeholder="ابحث عن كتاب، مؤلف...">
+                </div>
+                <p style="text-align:center; color:var(--text-secondary); margin-top:20px;">استخدم محرك البحث للعثور على
+                    ما تريده.</p>
+            </div>
+
+            <!-- 3. PUBLISH PAGE -->
+            <div id="page-publish" class="page-content">
+                <div class="top-tabs">
+                    <div class="top-tab active" onclick="switchPubTab('pub-book', this)">نشر كتاب</div>
+                    <div class="top-tab" onclick="switchPubTab('pub-feed', this)">نشر في النبض</div>
+                </div>
+
+                <!-- Publish Book -->
+                <div id="pub-book" class="sub-page active" style="padding:20px;">
+                    <div id="individualNotice"
+                        style="display:none; background:#fff3cd; padding:10px; border-radius:8px; margin-bottom:15px; font-size:0.85rem; color:#856404;">
+                        <i class="fas fa-info-circle"></i> تنبيه: كبائع فردي، يمكنك نشر الكتب المستعملة فقط (حد أقصى 3).
+                    </div>
+                    <div class="form-group">
+                        <label>عنوان الكتاب</label>
+                        <input type="text" id="bookTitleInput" placeholder="أدخل العنوان...">
+                    </div>
+                    <div class="form-group">
+                        <label>حالة الكتاب</label>
+                        <select id="bookConditionInput">
+                            <option value="used">مستعمل</option>
+                            <option value="new">جديد</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="releaseDateGroup" style="display:none;">
+                        <label>تاريخ الإصدار العام (للجمهور)</label>
+                        <input type="date" id="publicReleaseDate">
+                    </div>
+                    <div class="form-group">
+                        <label>السعر (د.ج)</label>
+                        <input type="number" id="bookPriceInput" placeholder="مثال: 1200">
+                    </div>
+                    <button class="btn-submit" onclick="submitBook()">نشر الآن</button>
+                </div>
+
+                <!-- Publish Feed -->
+                <div id="pub-feed" class="sub-page" style="display:none; padding:20px;">
+                    <div class="form-group">
+                        <label>نص المنشور (حد أقصى 120 كلمة - بدون روابط)</label>
+                        <textarea id="feedTextInput" style="height:150px;" oninput="validateFeedInput()"></textarea>
+                        <div id="wordCountLabel" style="font-size:0.8rem; color:var(--text-secondary); margin-top:5px;">
+                            0 / 120 كلمة</div>
+                    </div>
+                    <button class="btn-submit" id="submitFeedBtn" onclick="submitFeedPost()">نشر في النبض</button>
+                </div>
+            </div>
+
+            <!-- 4. FAVORITES PAGE -->
+            <div id="page-favorites" class="page-content">
+                <p style="text-align:center; color:var(--text-secondary); margin-top:50px;">قائمة المفضلة فارغة حالياً.
+                </p>
+            </div>
+
+            <!-- 5. PROFILE PAGE -->
+            <div id="page-profile" class="page-content">
+                <div style="text-align:center; padding:30px;">
+                    <img src="https://ui-avatars.com/api/?name=User&background=random" class="avatar"
+                        style="width:80px; height:80px;" id="profileAvatarBig">
+                    <h2 id="profileNameBig" style="margin-top:15px;">المستخدم</h2>
+                    <p id="profileRoleBig" style="color:var(--text-secondary);">مشتري</p>
+                    <p id="libraryIdDisplay"
+                        style="font-family: monospace; font-weight: 700; color: var(--primary); margin-top: 5px; display: none;">
+                    </p>
+                    <button class="btn-submit"
+                        style="background:var(--accent); margin-top:30px; width:auto; padding:10px 30px;"
+                        onclick="logout()">تسجيل الخروج</button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Bottom Nav -->
+        <nav class="bottom-nav">
+            <div class="nav-item active" onclick="switchPage('home')"><i class="fas fa-home"></i><span>الرئيسية</span>
+            </div>
+            <div class="nav-item" onclick="switchPage('search')"><i class="fas fa-search"></i><span>بحث</span></div>
+            <div class="nav-item" onclick="switchPage('publish')"><i class="fas fa-plus-circle"></i><span>نشر</span>
+            </div>
+            <div class="nav-item" onclick="switchPage('favorites')"><i class="fas fa-heart"></i><span>مفضلة</span></div>
+            <div class="nav-item" onclick="switchPage('profile')"><i class="fas fa-user-circle"></i><span>حسابي</span>
+            </div>
+        </nav>
+    </div>
+
+    <script>
+        // --- Core Logic ---
+        let currentUserRole = localStorage.getItem('bookdz_role');
+        let pwaDeferredPrompt = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initStates();
+            if (currentUserRole) {
+                applyUserRole(currentUserRole);
+                document.getElementById('authOverlay').style.display = 'none';
+                document.getElementById('logoutBtn').style.display = 'block';
+            }
+            // Register Service Worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('./sw.js');
+            }
+        });
+
+        // --- PWA Logic ---
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            pwaDeferredPrompt = e;
+            if (!document.getElementById('installAppBtn') && currentUserRole) {
+                const installBtn = document.createElement('button');
+                installBtn.id = 'installAppBtn';
+                installBtn.className = 'logout-btn-header';
+                installBtn.style.background = 'var(--primary)';
+                installBtn.style.color = 'white';
+                installBtn.innerText = 'تثبيت';
+                installBtn.onclick = installPWA;
+                const actions = document.getElementById('headerActions');
+                if (actions) actions.prepend(installBtn);
+            }
+        });
+
+        function installPWA() {
+            if (pwaDeferredPrompt) {
+                pwaDeferredPrompt.prompt();
+                pwaDeferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        const btn = document.getElementById('installAppBtn');
+                        if (btn) btn.remove();
+                    }
+                    pwaDeferredPrompt = null;
+                });
+            }
+        }
+
+        // --- Auth UI ---
+        function toggleAuthView(viewId) {
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+        }
+
+        function openRegForm(role) {
+            document.getElementById('stdRegRole').value = role;
+            document.getElementById('stdRegTitle').innerText =
+                role === 'user' ? 'تسجيل مستخدم' :
+                    role === 'individual' ? 'تسجيل بائع فردي' :
+                        role === 'bookstore' ? 'تسجيل مكتبة' : 'تسجيل';
+
+            // Toggle Municipality for Bookstore
+            updateMunicipalities();
+            toggleAuthView('standardRegForm');
+        }
+
+        let mockUserDB = JSON.parse(localStorage.getItem('maktba_user_db') || '{}');
+
+        function processLogin(manualRole = null) {
+            const identifier = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPass').value;
+
+            let role = manualRole;
+
+            if (!role) {
+                if (!identifier || !pass) {
+                    alert('يرجى إدخال بيانات الدخول!');
+                    return;
+                }
+
+                // Lookup in mock database
+                role = mockUserDB[identifier];
+
+                if (!role) {
+                    // Default logic for demo: detect based on ID format
+                    if (identifier.includes('@')) role = 'publisher';
+                    else if (identifier.length >= 10) role = 'bookstore';
+                    else role = 'user';
+                }
+            }
+
+            currentUserRole = role;
+            localStorage.setItem('bookdz_role', role);
+            if (identifier && role === 'bookstore') {
+                localStorage.setItem('bookstore_phone', identifier);
+            }
+
+            applyUserRole(role);
+            document.getElementById('authOverlay').style.display = 'none';
+            document.getElementById('logoutBtn').style.display = 'block';
+
+            // UI Adjustments for Publishing
+            if (role === 'individual') {
+                document.getElementById('individualNotice').style.display = 'block';
+                document.getElementById('bookConditionInput').value = 'used';
+                document.getElementById('bookConditionInput').disabled = true;
+                document.getElementById('releaseDateGroup').style.display = 'none';
+            } else if (role === 'publisher') {
+                document.getElementById('individualNotice').style.display = 'none';
+                document.getElementById('bookConditionInput').value = 'new';
+                document.getElementById('bookConditionInput').disabled = false;
+                document.getElementById('releaseDateGroup').style.display = 'block';
+            } else {
+                document.getElementById('individualNotice').style.display = 'none';
+                document.getElementById('bookConditionInput').disabled = false;
+                document.getElementById('releaseDateGroup').style.display = 'none';
+            }
+
+            window.dispatchEvent(new Event('beforeinstallprompt'));
+            renderMarket();
+        }
+
+        function updateLoginPrompt() {
+            // Optional UI feedback could go here
+        }
+
+        function applyUserRole(role) {
+            const label = document.getElementById('headerRoleLabel');
+            const name = document.getElementById('headerName');
+            const bigName = document.getElementById('profileNameBig');
+            const bigRole = document.getElementById('profileRoleBig');
+
+            const roleNames = {
+                'user': 'مشتري',
+                'individual': 'بائع فردي',
+                'bookstore': 'مكتبة',
+                'publisher': 'دار نشر'
+            };
+
+            name.innerText = roleNames[role] || 'مرحباً';
+            if (bigName) bigName.innerText = roleNames[role] || 'المستخدم';
+            if (bigRole) bigRole.innerText = (role === 'user' ? 'مشتري' : 'حساب بائع');
+
+            label.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${role === 'bookstore' ? 'متجر معتمد' : 'الجزائر العاصمة'}`;
+
+            // Hide publish for regular users (Buyer Only)
+            const publishNav = document.querySelector('.nav-item[onclick*="publish"]');
+            if (publishNav) {
+                publishNav.style.display = (role === 'user' ? 'none' : 'flex');
+            }
+
+            if (role === 'bookstore' || role === 'publisher') {
+                document.getElementById('b2bTab').style.display = 'block';
+            } else {
+                document.getElementById('b2bTab').style.display = 'none';
+            }
+
+            const libIdDisplay = document.getElementById('libraryIdDisplay');
+            const storedLibId = localStorage.getItem('maktba_lib_id');
+            if (role === 'bookstore' && storedLibId && libIdDisplay) {
+                libIdDisplay.innerText = `LibraryID: ${storedLibId}`;
+                libIdDisplay.style.display = 'block';
+            } else if (libIdDisplay) {
+                libIdDisplay.style.display = 'none';
+            }
+
+            renderMarket();
+        }
+
+        function generateLibraryID() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            for (let i = 0; i < 8; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        // --- States & Registration ---
+        const statesData = {
+            "1": ["الجزائر الوسطى", "سيدي امحمد", "المدنية"],
+            "2": ["الشلف", "تنس", "بوقادير"],
+            "16": ["الجزائر", "الرويبة", "باب الوادي", "الحراش"]
+        };
+
+        function initStates() {
+            const select = document.getElementById('regState');
+            if (!select) return;
+            for (let id in statesData) {
+                const opt = document.createElement('option');
+                opt.value = id; opt.textContent = id + " - ولاية " + id;
+                select.appendChild(opt);
+            }
+        }
+
+        function updateMunicipalities() {
+            const stateId = document.getElementById('regState')?.value;
+            const role = document.getElementById('stdRegRole')?.value;
+            const group = document.getElementById('regMunicipalityGroup');
+            const select = document.getElementById('regMunicipality');
+
+            if (!group || !select) return; // Safety check
+
+            if (role === 'bookstore' && stateId) {
+                group.style.display = 'block';
+                select.innerHTML = '<option value="">-- اختر البلدية --</option>';
+                (statesData[stateId] || []).forEach(m => {
+                    const opt = document.createElement('option');
+                    opt.value = m; opt.textContent = m; select.appendChild(opt);
+                });
+            } else {
+                group.style.display = 'none';
+            }
+        }
+
+        let pendingRegistrationData = null;
+
+        function submitRegister() {
+            const role = document.getElementById('stdRegRole').value;
+            const phone = document.getElementById('regPhone').value;
+            const state = document.getElementById('regState').value;
+            const municipality = document.getElementById('regMunicipality').value;
+            const pass = document.getElementById('regPass').value;
+            const passConfirm = document.getElementById('regPassConfirm').value;
+
+            if (!phone || !pass || !passConfirm) {
+                alert('يرجى ملء جميع الحقول الإلزامية (الهاتف وكلمات المرور)!');
+                return;
+            }
+
+            if (pass !== passConfirm) {
+                alert('كلمات المرور غير متطابقة!');
+                return;
+            }
+
+            if (role === 'bookstore' && (!state || !municipality)) {
+                alert('الولاية والبلدية إلزامية للمكتبات!');
+                return;
+            }
+
+            // Simulate sending OTP
+            const simulatedOTP = "123456"; // For demo purposes
+            pendingRegistrationData = { role, phone, state, municipality, pass, otp: simulatedOTP };
+
+            document.getElementById('otpInstruction').innerText = `تم إرسال رمز التحقق (OTP) إلى الرقم: ${phone}`;
+            toggleAuthView('otpView');
+            alert(`[محاكاة SMS] رمز التحقق الخاص بك هو: ${simulatedOTP}`);
+        }
+
+        function verifyOTP() {
+            const enteredOTP = document.getElementById('otpInput').value;
+            if (!pendingRegistrationData || enteredOTP !== pendingRegistrationData.otp) {
+                alert('رمز التحقق غير صحيح!');
+                return;
+            }
+
+            const { role, phone } = pendingRegistrationData;
+
+            // Register in Mock DB for Auto-Detection on Login
+            mockUserDB = JSON.parse(localStorage.getItem('maktba_user_db') || '{}');
+            mockUserDB[phone] = role;
+            localStorage.setItem('maktba_user_db', JSON.stringify(mockUserDB));
+
+            if (role === 'individual') localStorage.setItem('individual_phone', phone);
+
+            if (role === 'bookstore') {
+                const loginInp = document.getElementById('loginEmail');
+                if (loginInp) loginInp.value = phone;
+                // Generate a unique immutable LibraryID
+                localStorage.setItem('maktba_lib_id', generateLibraryID());
+            } else {
+                localStorage.removeItem('maktba_lib_id');
+            }
+
+            alert('تم التحقق من الحساب وإنشاؤه بنجاح!');
+            processLogin(role);
+            pendingRegistrationData = null;
+        }
+
+        // --- Publishing Logic ---
+        function submitBook() {
+            const title = document.getElementById('bookTitleInput').value;
+            const price = document.getElementById('bookPriceInput').value;
+            if (!title || !price) { alert('يرجى ملء كافة البيانات الأساسية'); return; }
+
+            if (currentUserRole === 'individual') {
+                let count = parseInt(localStorage.getItem('individual_book_count') || '0');
+                if (count >= 3) { alert('عذراً، الحد الأقصى للبائع الفردي هو 3 كتب مستعملة فقط.'); return; }
+                localStorage.setItem('individual_book_count', (count + 1).toString());
+            }
+
+            const libId = localStorage.getItem('maktba_lib_id');
+            alert(`تم نشر الكتاب بنجاح! ${libId ? '(LibraryID: ' + libId + ')' : ''}`);
+            document.getElementById('bookTitleInput').value = '';
+            document.getElementById('bookPriceInput').value = '';
+        }
+
+        // --- Feed Logic ---
+        function validateFeedInput() {
+            const text = document.getElementById('feedTextInput').value;
+            const words = text.trim().split(/\s+/).filter(w => w.length > 0);
+            const wordCount = words.length;
+            const urlPattern = /(https?:\/\/[^\s]+|www\.[^\s]+)/gi;
+            const hasLinks = urlPattern.test(text);
+            const btn = document.getElementById('submitFeedBtn');
+
+            document.getElementById('wordCountLabel').innerText = `${wordCount} / 120 كلمة`;
+            if (wordCount > 120 || hasLinks || wordCount === 0) {
+                btn.disabled = true;
+                document.getElementById('wordCountLabel').style.color = 'var(--accent)';
+            } else {
+                btn.disabled = false;
+                document.getElementById('wordCountLabel').style.color = 'var(--text-secondary)';
+            }
+        }
+
+        function submitFeedPost() {
+            const text = document.getElementById('feedTextInput').value;
+            const feedList = document.getElementById('feedList');
+            const post = document.createElement('div');
+            post.className = 'feed-post';
+            post.innerHTML = `
+                <div class="feed-header"><span class="feed-type">نشر جديد</span><span>الآن</span></div>
+                <div class="feed-text">${text}</div>
+                <div class="feed-actions">
+                    <button onclick="react(this, '❤️')">❤️</button><button onclick="react(this, '👎')">👎</button>
+                    <button onclick="react(this, '🔁')">🔁</button><button onclick="react(this, '🔖')">🔖</button>
+                </div>
+            `;
+            feedList.prepend(post);
+            document.getElementById('feedTextInput').value = '';
+            validateFeedInput();
+            alert('تم النشر في النبض!');
+        }
+
+        function react(btn, icon) {
+            btn.style.background = 'rgba(99, 102, 241, 0.1)';
+            btn.style.borderRadius = '8px';
+        }
+
+        function renderMarket() {
+            const b2bTab = document.getElementById('b2bTab');
+            const bestSellersContainer = document.getElementById('bestSellers');
+            const usedBooksContainer = document.getElementById('usedBooks');
+            const publishersTabContent = document.getElementById('home-publishers');
+
+            if (!bestSellersContainer) return;
+
+            // Mock Data for logic demonstration
+            const mockBooks = [
+                { id: 101, title: 'إصدار مستقبلي', author: 'دار النور', price: 2000, type: 'publisher', releaseDate: '2026-12-01', cover: 'https://images.unsplash.com/photo-1589998059171-988d887df646?q=80&w=200&auto=format&fit=crop' },
+                { id: 102, title: 'كتاب متاح حالياً', author: 'دار العلم', price: 1500, type: 'publisher', releaseDate: '2023-01-01', cover: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=200&auto=format&fit=crop' },
+                { id: 103, title: 'رواية مستعملة', author: 'بائع شغوف', price: 500, type: 'individual', cover: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=200&auto=format&fit=crop' }
+            ];
+
+            const now = new Date();
+
+            // 1. Best Sellers (Standard visible books + Released publisher books)
+            const commonBooks = mockBooks.filter(b =>
+                (b.type === 'publisher' && new Date(b.releaseDate) <= now) ||
+                (b.type !== 'publisher' && b.type !== 'individual')
+            );
+
+            // 2. Used Books (Individual sellers)
+            const usedBooks = mockBooks.filter(b => b.type === 'individual');
+
+            // 3. B2B / Publisher Exclusive (Before release date - Visible to bookstore/publisher only)
+            const b2bBooks = mockBooks.filter(b => b.type === 'publisher' && new Date(b.releaseDate) > now);
+
+            // Render logic
+            bestSellersContainer.innerHTML = commonBooks.map(b => createBookCard(b)).join('') || '<p>لا توجد كتب حالياً</p>';
+            usedBooksContainer.innerHTML = usedBooks.map(b => createBookCard(b, 'individual')).join('') || '<p>لا توجد كتب مستعملة</p>';
+
+            if (publishersTabContent) {
+                publishersTabContent.innerHTML = `
+                    <div style="padding:20px;">
+                        <h3 style="margin-bottom:15px;">إصدارات قادمة (حصرية للمكتبات)</h3>
+                        <div class="horizontal-scroll">${b2bBooks.map(b => createBookCard(b)).join('') || '<p>لا توجد إصدارات حصرية حالياً</p>'}</div>
+                    </div>
+                `;
+            }
+
+            if (currentUserRole === 'bookstore') b2bTab.innerText = 'إصدارات دور النشر (B2B)';
+            else if (currentUserRole === 'publisher') b2bTab.innerText = 'إصداراتك (إدارة)';
+        }
+
+        function createBookCard(book, typeOverride) {
+            const isWA = typeOverride === 'individual' || book.type === 'individual';
+            const action = isWA ? `contactSellerWA('${book.title}', 'individual')` : `addToCart(${book.id})`;
+            const icon = isWA ? 'fab fa-whatsapp' : 'fas fa-cart-plus';
+            const btnText = isWA ? 'واتساب' : 'أضف للسلة';
+
+            return `
+                <div class="book-card">
+                    <img src="${book.cover}" class="book-cover">
+                    <div class="book-info">
+                        <div class="book-title">${book.title}</div>
+                        <div class="book-author">${book.author}</div>
+                        <div class="book-price">${book.price} د.ج</div>
+                        <button class="btn ${isWA ? 'btn-wa' : 'btn-buy'}" onclick="${action}">
+                            <i class="${icon}"></i> ${btnText}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- Navigation ---
+        function switchPage(pageId) {
+            // Restriction: user cannot access publish
+            if (pageId === 'publish' && currentUserRole === 'user') {
+                alert('عذراً، هذا الحساب للشراء فقط. لا يمكنك النشر.');
+                return;
+            }
+
+            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-' + pageId).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            if (window.event && window.event.currentTarget.classList.contains('nav-item')) {
+                window.event.currentTarget.classList.add('active');
+            }
+        }
+
+        function switchHomeTab(tabId, el) {
+            document.querySelectorAll('#page-home .sub-page').forEach(s => s.style.display = 'none');
+            document.getElementById(tabId).style.display = 'block';
+            document.querySelectorAll('#page-home .top-tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function switchPubTab(tabId, el) {
+            document.querySelectorAll('#page-publish .sub-page').forEach(s => s.style.display = 'none');
+            document.getElementById(tabId).style.display = 'block';
+            document.querySelectorAll('#page-publish .top-tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function contactSellerWA(bookTitle, type) {
+            let phone = type === 'individual' ? localStorage.getItem('individual_phone') : '0555000000';
+            const msg = encodeURIComponent(`مرحباً، أنا مهتم بكتاب: ${bookTitle}`);
+            window.open(`https://wa.me/213${(phone || '0555000000').replace(/^0/, '')}?text=${msg}`, '_blank');
+        }
+
+        function logout() {
+            localStorage.removeItem('bookdz_role');
+            location.reload();
+        }
+
+        // --- Cart System ---
+        let cartItems = [];
+        const mockBooks = [
+            { id: 101, title: 'إصدار مستقبلي', author: 'دار النور', price: 2000, type: 'publisher', releaseDate: '2026-12-01', cover: 'https://images.unsplash.com/photo-1589998059171-988d887df646?q=80&w=200&auto=format&fit=crop' },
+            { id: 102, title: 'كتاب متاح حالياً', author: 'دار العلم', price: 1500, type: 'publisher', releaseDate: '2023-01-01', cover: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=200&auto=format&fit=crop' },
+            { id: 103, title: 'رواية مستعملة', author: 'بائع شغوف', price: 500, type: 'individual', cover: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=200&auto=format&fit=crop' }
+        ];
+
+        function addToCart(bookId) {
+            const book = mockBooks.find(b => b.id === bookId);
+            if (book) {
+                cartItems.push(book);
+                updateCartBadge();
+                alert('تمت الإضافة للسلة!');
+            }
+        }
+
+        function updateCartBadge() {
+            const badge = document.getElementById('cartBadge');
+            if (cartItems.length > 0) {
+                badge.innerText = cartItems.length;
+                badge.style.display = 'block';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        function showCart() {
+            renderCart();
+            document.getElementById('cartOverlay').style.display = 'flex';
+        }
+
+        function hideCart() {
+            document.getElementById('cartOverlay').style.display = 'none';
+        }
+
+        function renderCart() {
+            const body = document.getElementById('cartItemsList');
+            if (cartItems.length === 0) {
+                body.innerHTML = '<p style="text-align:center;">السلة فارغة</p>';
+                return;
+            }
+            body.innerHTML = cartItems.map((item, idx) => `
+                <div class="cart-item">
+                    <img src="${item.cover}" class="cart-item-img">
+                    <div class="cart-item-info">
+                        <div style="font-weight:700;">${item.title}</div>
+                        <div style="font-size:0.8rem; color:var(--text-secondary);">${item.price} د.ج</div>
+                    </div>
+                    <i class="fas fa-trash cart-item-remove" onclick="removeFromCart(${idx})"></i>
+                </div>
+            `).join('');
+
+            const total = cartItems.reduce((sum, item) => sum + item.price, 0);
+            document.getElementById('cartTotal').innerText = `الإجمالي: ${total} د.ج`;
+        }
+
+        function removeFromCart(idx) {
+            cartItems.splice(idx, 1);
+            updateCartBadge();
+            renderCart();
+        }
+
+        function proceedToCheckout() {
+            if (cartItems.length === 0) return;
+            hideCart();
+            document.getElementById('checkoutOverlay').style.display = 'flex';
+            // Sync states to checkout form
+            const select = document.getElementById('orderState');
+            if (select.options.length <= 1) {
+                for (let id in statesData) {
+                    const opt = document.createElement('option');
+                    opt.value = id; opt.textContent = id + " - ولاية " + id;
+                    select.appendChild(opt);
+                }
+            }
+        }
+
+        function updateOrderMunicipalities() {
+            const stateId = document.getElementById('orderState').value;
+            const select = document.getElementById('orderMunicipality');
+            select.innerHTML = '<option value="">-- اختر البلدية --</option>';
+            (statesData[stateId] || []).forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m; opt.textContent = m; select.appendChild(opt);
+            });
+        }
+
+        function submitOrder() {
+            const phone = document.getElementById('orderPhone').value;
+            const state = document.getElementById('orderState').value;
+            const muni = document.getElementById('orderMunicipality').value;
+
+            if (!phone || !state || !muni) {
+                alert('يرجى ملء جميع بيانات التوصيل!');
+                return;
+            }
+
+            const libId = localStorage.getItem('maktba_lib_id');
+            alert(`تم إرسال طلبك بنجاح! ستتواصل معك المكتبة قريباً. ${libId ? '(Order ID linked to: ' + libId + ')' : ''}`);
+            cartItems = [];
+            updateCartBadge();
+            document.getElementById('checkoutOverlay').style.display = 'none';
+        }
+    </script>
+
+    <!-- Cart Overlay -->
+    <div id="cartOverlay" class="cart-overlay" onclick="if(event.target===this) hideCart()">
+        <div class="cart-modal">
+            <div class="modal-header">
+                <h3>سلة المشتريات</h3>
+                <i class="fas fa-times" style="cursor:pointer;" onclick="hideCart()"></i>
+            </div>
+            <div class="modal-body" id="cartItemsList"></div>
+            <div class="modal-footer">
+                <div id="cartTotal" style="font-weight:800; margin-bottom:15px; text-align:center;">الإجمالي: 0 د.ج
+                </div>
+                <button class="btn-submit" onclick="proceedToCheckout()">إتمام الطلب</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Overlay -->
+    <div id="checkoutOverlay" class="checkout-overlay">
+        <div class="checkout-modal">
+            <div class="modal-header">
+                <h3>بيانات التوصيل</h3>
+                <i class="fas fa-times" style="cursor:pointer;"
+                    onclick="document.getElementById('checkoutOverlay').style.display='none'"></i>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>رقم الهاتف</label>
+                    <input type="tel" id="orderPhone" placeholder="0555xxxxxx">
+                </div>
+                <div class="form-group">
+                    <label>الولاية</label>
+                    <select id="orderState" onchange="updateOrderMunicipalities()">
+                        <option value="">-- اختر الولاية --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>البلدية</label>
+                    <select id="orderMunicipality">
+                        <option value="">-- اختر البلدية --</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-submit" onclick="submitOrder()">تأكيد الشراء</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
